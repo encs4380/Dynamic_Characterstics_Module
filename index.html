@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dynamic Systems & PID Workshop</title>
+  <style>
+    :root{
+      --accent:#4f46e5;
+      --accent-dark:#3730a3;
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --muted:#6b7280;
+    }
+    body{font-family:Inter, "Segoe UI", Roboto, sans-serif; background:var(--bg); margin:0; padding:24px; color:#111;}
+    .container{max-width:820px; margin:24px auto; background:var(--card); border-radius:12px; box-shadow:0 8px 24px rgba(15,23,42,0.06); padding:28px;}
+    header{display:flex; gap:16px; align-items:center;}
+    header img{width:84px; height:84px; object-fit:contain; border-radius:8px;}
+    h1{margin:0; font-size:22px; color:#0f172a;}
+    p.lead{margin:6px 0 14px; color:var(--muted);}
+    .buttons{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;}
+    .btn{display:inline-flex; align-items:center; gap:10px; padding:12px 16px; background:var(--accent); color:#fff; text-decoration:none; border-radius:10px; box-shadow:0 6px 18px rgba(79,70,229,0.14);}
+    .btn.secondary{background:#ffffff; color:var(--accent); border:1px solid rgba(79,70,229,0.12);}
+    .note{margin-top:18px; color:var(--muted); font-size:14px;}
+    footer{margin-top:22px; color:var(--muted); font-size:13px; text-align:center;}
+    @media (max-width:520px){
+      header{flex-direction:column; align-items:center;}
+      header img{width:72px; height:72px;}
+      .container{padding:18px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <!-- Replace logo_url with your university logo URL or keep placeholder. -->
+      <img id="uni-logo" src="https://upload.wikimedia.org/wikipedia/commons/e/e5/University_of_Palestine_logo.png" alt="University Logo">
+      <div>
+        <h1>Dynamic Systems &amp; PID Control Workshop</h1>
+        <p class="lead"><strong>Presented by:</strong> Dr. Wasel Ghanem &amp; Faiza Nida — Dept. of Electrical &amp; Computer Engineering</p>
+      </div>
+    </header>
+
+    <section>
+      <h3>Explore the Interactive Notebooks</h3>
+      <div class="buttons">
+        <!-- These links will be set by the script below. -->
+        <a id="link-dyn" class="btn" href="#" target="_blank">🎛️ Open Dynamic Systems Notebook</a>
+        <a id="link-pid" class="btn secondary" href="#" target="_blank">⚙️ Open PID Controller Notebook</a>
+      </div>
+
+      <p class="note">
+        Students can open the links from their phones or laptops — no login, no installation. Binder will start a temporary session where the notebook runs in the cloud.
+      </p>
+    </section>
+
+    <footer>
+      © <span id="year"></span> Dynamic Systems Workshop — University
+    </footer>
+  </div>
+
+  <script>
+    // ----- EDIT THESE VALUES to match your GitHub repo -----
+    const GITHUB_USER = "fayzeh-Elzghier";        // change if different
+    const REPO_NAME_DYN = "Dynamic-Workshop"; // repo where Dynamic notebook lives
+    const REPO_NAME_PID = "Dynamic-Workshop";     // repo where PID notebook lives (or same repo)
+    const BRANCH = "main";                   // branch name (usually "main")
+    // ------------------------------------------------------
+
+    function binderURL(user, repo, branch, filepath){
+      const base = `https://mybinder.org/v2/gh/${user}/${repo}/${branch}`;
+      if(!filepath) return base;
+      return base + `?urlpath=lab/tree/${encodeURIComponent(filepath)}`;
+    }
+
+    document.getElementById("link-dyn").href = binderURL(GITHUB_USER, REPO_NAME_DYN, BRANCH, "Dynamic_Systems.ipynb");
+    document.getElementById("link-pid").href = binderURL(GITHUB_USER, REPO_NAME_PID, BRANCH, "PID_Simulation.ipynb");
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
