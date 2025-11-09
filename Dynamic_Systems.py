@@ -1,1 +1,95 @@
-{"metadata":{"kernelspec":{"display_name":"Python 3 (ipykernel)","language":"python","name":"python3"},"language_info":{"name":"python","version":"3.10.19","mimetype":"text/x-python","codemirror_mode":{"name":"ipython","version":3},"pygments_lexer":"ipython3","nbconvert_exporter":"python","file_extension":".py"}},"nbformat_minor":5,"nbformat":4,"cells":[{"id":"1bda8d47-fa24-4241-97a6-6b9065449c98","cell_type":"code","source":"# 📘 Dynamic Systems Exploration\n# Interactive Visualization for First and Second Order Systems\n# Prepared for Faiza \n\n# =======================\n# 🧩 Import Libraries\n# =======================\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport control as ctrl\nfrom ipywidgets import interact\n\n# =======================\n# ⚙️ First-Order System\n# =======================\n# G(s) = K / (τs + 1)\ndef first_order(K=1.0, tau=1.0, signal_type='Step'):\n    sys = ctrl.tf([K], [tau, 1])\n    t = np.linspace(0, 10, 500)\n    \n    # Generate input signal\n    if signal_type == 'Step':\n        u = np.ones_like(t)\n        t_out, y_out = ctrl.step_response(sys, t)\n    elif signal_type == 'Ramp':\n        u = t\n        t_out, y_out = ctrl.forced_response(sys, T=t, U=u)\n    elif signal_type == 'Sinusoidal':\n        omega = 1.0\n        u = np.sin(omega * t)\n        t_out, y_out = ctrl.forced_response(sys, T=t, U=u)\n    else:\n        raise ValueError(\"Invalid signal type.\")\n    \n    # Plot input and output\n    plt.figure(figsize=(8,4))\n    plt.plot(t, u, 'g--', label=\"Input Signal\")\n    plt.plot(t_out, y_out, 'b', label=\"System Output\")\n    plt.title(f\"First-Order Response | K={K}, τ={tau}, Signal={signal_type}\")\n    plt.xlabel(\"Time (s)\")\n    plt.ylabel(\"Output y(t)\")\n    plt.grid(True)\n    plt.legend()\n    plt.show()\n\nprint(\"✨ First-Order System: Move sliders and select signal type:\")\ninteract(first_order, K=(0.5, 3.0, 0.5), tau=(0.2, 3.0, 0.2), \n         signal_type=['Step', 'Ramp', 'Sinusoidal']);\n\n# =======================\n#  Second-Order System\n# =======================\n# G(s) = ωₙ² / (s² + 2ζωₙs + ωₙ²)\ndef second_order(zeta=0.5, omega_n=2.0, signal_type='Step'):\n    sys = ctrl.tf([omega_n**2], [1, 2*zeta*omega_n, omega_n**2])\n    t = np.linspace(0, 10, 500)\n    \n    # Generate input signal\n    if signal_type == 'Step':\n        u = np.ones_like(t)\n        t_out, y_out = ctrl.step_response(sys, t)\n    elif signal_type == 'Ramp':\n        u = t\n        t_out, y_out = ctrl.forced_response(sys, T=t, U=u)\n    elif signal_type == 'Sinusoidal':\n        omega = 1.0\n        u = np.sin(omega * t)\n        t_out, y_out = ctrl.forced_response(sys, T=t, U=u)\n    else:\n        raise ValueError(\"Invalid signal type.\")\n    \n    # Plot input and output\n    plt.figure(figsize=(8,4))\n    plt.plot(t, u, 'g--', label=\"Input Signal\")\n    plt.plot(t_out, y_out, 'b', label=\"System Output\")\n    plt.title(f\"Second-Order Response | ζ={zeta}, ωₙ={omega_n}, Signal={signal_type}\")\n    plt.xlabel(\"Time (s)\")\n    plt.ylabel(\"Output y(t)\")\n    plt.grid(True)\n    plt.legend()\n    plt.show()\n\nprint(\"\\n💫 Second-Order System: Move sliders and select signal type:\")\ninteract(second_order, zeta=(0.0, 2.0, 0.1), omega_n=(0.5, 5.0, 0.5), \n         signal_type=['Step', 'Ramp', 'Sinusoidal']);\n\n# =======================\n# 💡 Observations\n# =======================\nprint(\"\\n📚 Observations:\")\nprint(\"- τ ↑ → first-order response slower.\")\nprint(\"- ζ controls damping (oscillations) in second-order systems.\")\nprint(\"- ωₙ controls speed in second-order systems.\")\nprint(\"- K controls output level in first-order systems.\")\nprint(\"- Ramp & Sinusoidal inputs let you explore tracking & oscillatory behavior.\")\n","metadata":{"trusted":true},"outputs":[{"name":"stdout","output_type":"stream","text":"✨ First-Order System: Move sliders and select signal type:\n"},{"output_type":"display_data","data":{"text/plain":"interactive(children=(FloatSlider(value=1.0, description='K', max=3.0, min=0.5, step=0.5), FloatSlider(value=1…","application/vnd.jupyter.widget-view+json":{"version_major":2,"version_minor":0,"model_id":"f57562b9df614aa09b0e7e0b60b4dc2c"}},"metadata":{}},{"name":"stdout","output_type":"stream","text":"\n💫 Second-Order System: Move sliders and select signal type:\n"},{"output_type":"display_data","data":{"text/plain":"interactive(children=(FloatSlider(value=0.5, description='zeta', max=2.0), FloatSlider(value=2.0, description=…","application/vnd.jupyter.widget-view+json":{"version_major":2,"version_minor":0,"model_id":"4f616c9c893f4c0ca1fdf1aa6b1fb99b"}},"metadata":{}},{"name":"stdout","output_type":"stream","text":"\n📚 Observations:\n- τ ↑ → first-order response slower.\n- ζ controls damping (oscillations) in second-order systems.\n- ωₙ controls speed in second-order systems.\n- K controls output level in first-order systems.\n- Ramp & Sinusoidal inputs let you explore tracking & oscillatory behavior.\n"}],"execution_count":1},{"id":"b0bb7ccf-1cc8-47d1-bc77-4470e836a7b8","cell_type":"code","source":"","metadata":{"trusted":false},"outputs":[],"execution_count":null}]}
+# 📘 Dynamic Systems Exploration
+# Interactive Visualization for First and Second Order Systems
+# Prepared for Faiza 
+
+# =======================
+# 🧩 Import Libraries
+# =======================
+import numpy as np
+import matplotlib.pyplot as plt
+import control as ctrl
+from ipywidgets import interact
+
+# =======================
+# ⚙️ First-Order System
+# =======================
+# G(s) = K / (τs + 1)
+def first_order(K=1.0, tau=1.0, signal_type='Step'):
+    sys = ctrl.tf([K], [tau, 1])
+    t = np.linspace(0, 10, 500)
+    
+    # Generate input signal
+    if signal_type == 'Step':
+        u = np.ones_like(t)
+        t_out, y_out = ctrl.step_response(sys, t)
+    elif signal_type == 'Ramp':
+        u = t
+        t_out, y_out = ctrl.forced_response(sys, T=t, U=u)
+    elif signal_type == 'Sinusoidal':
+        omega = 1.0
+        u = np.sin(omega * t)
+        t_out, y_out = ctrl.forced_response(sys, T=t, U=u)
+    else:
+        raise ValueError("Invalid signal type.")
+    
+    # Plot input and output
+    plt.figure(figsize=(8,4))
+    plt.plot(t, u, 'g--', label="Input Signal")
+    plt.plot(t_out, y_out, 'b', label="System Output")
+    plt.title(f"First-Order Response | K={K}, τ={tau}, Signal={signal_type}")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Output y(t)")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+print("✨ First-Order System: Move sliders and select signal type:")
+interact(first_order, K=(0.5, 3.0, 0.5), tau=(0.2, 3.0, 0.2), 
+         signal_type=['Step', 'Ramp', 'Sinusoidal']);
+
+# =======================
+#  Second-Order System
+# =======================
+# G(s) = ωₙ² / (s² + 2ζωₙs + ωₙ²)
+def second_order(zeta=0.5, omega_n=2.0, signal_type='Step'):
+    sys = ctrl.tf([omega_n**2], [1, 2*zeta*omega_n, omega_n**2])
+    t = np.linspace(0, 10, 500)
+    
+    # Generate input signal
+    if signal_type == 'Step':
+        u = np.ones_like(t)
+        t_out, y_out = ctrl.step_response(sys, t)
+    elif signal_type == 'Ramp':
+        u = t
+        t_out, y_out = ctrl.forced_response(sys, T=t, U=u)
+    elif signal_type == 'Sinusoidal':
+        omega = 1.0
+        u = np.sin(omega * t)
+        t_out, y_out = ctrl.forced_response(sys, T=t, U=u)
+    else:
+        raise ValueError("Invalid signal type.")
+    
+    # Plot input and output
+    plt.figure(figsize=(8,4))
+    plt.plot(t, u, 'g--', label="Input Signal")
+    plt.plot(t_out, y_out, 'b', label="System Output")
+    plt.title(f"Second-Order Response | ζ={zeta}, ωₙ={omega_n}, Signal={signal_type}")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Output y(t)")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+print("\n💫 Second-Order System: Move sliders and select signal type:")
+interact(second_order, zeta=(0.0, 2.0, 0.1), omega_n=(0.5, 5.0, 0.5), 
+         signal_type=['Step', 'Ramp', 'Sinusoidal']);
+
+# =======================
+# 💡 Observations
+# =======================
+print("\n📚 Observations:")
+print("- τ ↑ → first-order response slower.")
+print("- ζ controls damping (oscillations) in second-order systems.")
+print("- ωₙ controls speed in second-order systems.")
+print("- K controls output level in first-order systems.")
+print("- Ramp & Sinusoidal inputs let you explore tracking & oscillatory behavior.")
