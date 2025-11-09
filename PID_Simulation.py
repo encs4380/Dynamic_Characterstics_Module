@@ -1,1 +1,83 @@
-{"metadata":{"kernelspec":{"display_name":"Python 3 (ipykernel)","language":"python","name":"python3"},"language_info":{"name":"python","version":"3.10.19","mimetype":"text/x-python","codemirror_mode":{"name":"ipython","version":3},"pygments_lexer":"ipython3","nbconvert_exporter":"python","file_extension":".py"}},"nbformat_minor":5,"nbformat":4,"cells":[{"id":"75ea0e74-1c10-45b8-a020-db0756341a7d","cell_type":"code","source":"#  PID Control Interactive Simulation\n#  Dynamic Systems Workshop – Dr. Wasel Ghanem & Fayzeh Elzghier\n\n# =======================\n#  Import Libraries\n# =======================\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport control as ctrl\nfrom ipywidgets import interact\n\n# =======================\n#  Define the plant (Second-order system)\n# =======================\n# G(s) = 1 / (s^2 + s + 1)\nplant = ctrl.tf([1], [1, 1, 1])\n\n# =======================\n#  💡 Define PID Controller with selectable input type\n# =======================\ndef pid_sim(Kp=1.0, Ki=0.0, Kd=0.0, signal_type='Step'):\n    # PID Controller: C(s) = Kp + Ki/s + Kd*s\n    C = ctrl.tf([Kd, Kp, Ki], [1, 0])\n    \n    # Closed-loop system\n    sys_cl = ctrl.feedback(C * plant)\n    \n    # Time vector\n    t = np.linspace(0, 10, 500)\n\n    # Generate the input signal based on user choice\n    if signal_type == 'Step':\n        t_out, y_out = ctrl.step_response(sys_cl, t)\n        u = np.ones_like(t)  # Step input\n    elif signal_type == 'Ramp':\n        u = t  # Ramp input\n        t_out, y_out = ctrl.forced_response(sys_cl, T=t, U=u)\n    elif signal_type == 'Sinusoidal':\n        omega = 1.0  # frequency in rad/s\n        u = np.sin(omega * t)\n        t_out, y_out = ctrl.forced_response(sys_cl, T=t, U=u)\n    else:\n        raise ValueError(\"Invalid signal type.\")\n\n    # Plot results\n    plt.figure(figsize=(8,4))\n    plt.plot(t_out, y_out, label=\"System Output\", linewidth=2)\n    plt.plot(t, u, '--', label=f\"{signal_type} Input\", alpha=0.7)\n    plt.title(f\"{signal_type} Response | Kp={Kp}, Ki={Ki}, Kd={Kd}\")\n    plt.xlabel(\"Time (s)\")\n    plt.ylabel(\"Output y(t)\")\n    plt.grid(True, alpha=0.3)\n    plt.legend()\n    plt.tight_layout()\n    plt.show()\n\n# =======================\n#  🔄 Interactive Controls\n# =======================\nprint(\"🎛️ Adjust the sliders and input type to observe PID behavior:\\n\")\n\ninteract(\n    pid_sim,\n    Kp=(0.0, 10.0, 0.5),\n    Ki=(0.0, 5.0, 0.2),\n    Kd=(0.0, 3.0, 0.1),\n    signal_type=['Step', 'Ramp', 'Sinusoidal']\n);\n\n# =======================\n#  💬 Observations\n# =======================\nprint(\"\"\"\n💡 Hints for analysis:\n- Increase Kp → faster response but more oscillation.\n- Increase Ki → removes steady-state error but may cause overshoot.\n- Increase Kd → adds damping and reduces overshoot.\n\n📈 Try switching between Step, Ramp, and Sinusoidal inputs to visualize:\n- Tracking capability (Ramp)\n- Steady-state error\n- Phase lag and oscillation (Sinusoidal)\n\"\"\")\n","metadata":{"trusted":true},"outputs":[{"name":"stdout","output_type":"stream","text":"🎛️ Adjust the sliders and input type to observe PID behavior:\n\n"},{"output_type":"display_data","data":{"text/plain":"interactive(children=(FloatSlider(value=1.0, description='Kp', max=10.0, step=0.5), FloatSlider(value=0.0, des…","application/vnd.jupyter.widget-view+json":{"version_major":2,"version_minor":0,"model_id":"a6a82f9ca08f4f53adf41b9723ab953d"}},"metadata":{}},{"name":"stdout","output_type":"stream","text":"\n💡 Hints for analysis:\n- Increase Kp → faster response but more oscillation.\n- Increase Ki → removes steady-state error but may cause overshoot.\n- Increase Kd → adds damping and reduces overshoot.\n\n📈 Try switching between Step, Ramp, and Sinusoidal inputs to visualize:\n- Tracking capability (Ramp)\n- Steady-state error\n- Phase lag and oscillation (Sinusoidal)\n\n"}],"execution_count":2},{"id":"947a079c-6f84-4fb2-9009-a42592f6ca8b","cell_type":"code","source":"","metadata":{"trusted":false},"outputs":[],"execution_count":null}]}
+#  PID Control Interactive Simulation
+#  Dynamic Systems Workshop – Dr. Wasel Ghanem & Fayzeh Elzghier
+
+# =======================
+#  Import Libraries
+# =======================
+import numpy as np
+import matplotlib.pyplot as plt
+import control as ctrl
+from ipywidgets import interact
+
+# =======================
+#  Define the plant (Second-order system)
+# =======================
+# G(s) = 1 / (s^2 + s + 1)
+plant = ctrl.tf([1], [1, 1, 1])
+
+# =======================
+#  💡 Define PID Controller with selectable input type
+# =======================
+def pid_sim(Kp=1.0, Ki=0.0, Kd=0.0, signal_type='Step'):
+    # PID Controller: C(s) = Kp + Ki/s + Kd*s
+    C = ctrl.tf([Kd, Kp, Ki], [1, 0])
+    
+    # Closed-loop system
+    sys_cl = ctrl.feedback(C * plant)
+    
+    # Time vector
+    t = np.linspace(0, 10, 500)
+
+    # Generate the input signal based on user choice
+    if signal_type == 'Step':
+        t_out, y_out = ctrl.step_response(sys_cl, t)
+        u = np.ones_like(t)  # Step input
+    elif signal_type == 'Ramp':
+        u = t  # Ramp input
+        t_out, y_out = ctrl.forced_response(sys_cl, T=t, U=u)
+    elif signal_type == 'Sinusoidal':
+        omega = 1.0  # frequency in rad/s
+        u = np.sin(omega * t)
+        t_out, y_out = ctrl.forced_response(sys_cl, T=t, U=u)
+    else:
+        raise ValueError("Invalid signal type.")
+
+    # Plot results
+    plt.figure(figsize=(8,4))
+    plt.plot(t_out, y_out, label="System Output", linewidth=2)
+    plt.plot(t, u, '--', label=f"{signal_type} Input", alpha=0.7)
+    plt.title(f"{signal_type} Response | Kp={Kp}, Ki={Ki}, Kd={Kd}")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Output y(t)")
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+# =======================
+#  🔄 Interactive Controls
+# =======================
+print("🎛️ Adjust the sliders and input type to observe PID behavior:\n")
+
+interact(
+    pid_sim,
+    Kp=(0.0, 10.0, 0.5),
+    Ki=(0.0, 5.0, 0.2),
+    Kd=(0.0, 3.0, 0.1),
+    signal_type=['Step', 'Ramp', 'Sinusoidal']
+);
+
+# =======================
+#  💬 Observations
+# =======================
+print("""
+💡 Hints for analysis:
+- Increase Kp → faster response but more oscillation.
+- Increase Ki → removes steady-state error but may cause overshoot.
+- Increase Kd → adds damping and reduces overshoot.
+
+📈 Try switching between Step, Ramp, and Sinusoidal inputs to visualize:
+- Tracking capability (Ramp)
+- Steady-state error
+- Phase lag and oscillation (Sinusoidal)
+""")
